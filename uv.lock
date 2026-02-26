@@ -1,0 +1,19 @@
+version = 1
+revision = 3
+requires-python = ">=3.10"
+
+[[package]]
+name = "example-memory"
+version = "0.1.0"
+source = { virtual = "." }
+dependencies = [
+    { name = "tagentacle-py-core" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "tagentacle-py-core", editable = "../python-sdk-core" }]
+
+[[package]]
+name = "tagentacle-py-core"
+version = "0.1.0"
+source = { editable = "../python-sdk-core" }

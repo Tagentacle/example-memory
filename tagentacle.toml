@@ -1,0 +1,9 @@
+[package]
+name = "example_memory"
+version = "0.1.0"
+description = "Session persistence node — subscribes /memory/latest, saves conversations to disk"
+authors = ["Tagentacle Contributors"]
+type = "executable"
+
+[entry_points]
+node = "memory:main"
