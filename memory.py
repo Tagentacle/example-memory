@@ -40,8 +40,13 @@ def _safe_write(filepath: str, data: dict, retries: int = MAX_RETRIES) -> bool:
             os.replace(tmp, filepath)
             return True
         except Exception as e:
-            logger.warning("Write attempt %d/%d failed for %s: %s",
-                           attempt + 1, retries, filepath, e)
+            logger.warning(
+                "Write attempt %d/%d failed for %s: %s",
+                attempt + 1,
+                retries,
+                filepath,
+                e,
+            )
             if attempt < retries - 1:
                 time.sleep(RETRY_DELAY)
     return False
@@ -69,13 +74,21 @@ async def main():
 
         filepath = os.path.join(SESSIONS_DIR, f"{session_id}.json")
         ok = await asyncio.get_event_loop().run_in_executor(
-            None, _safe_write, filepath, data,
+            None,
+            _safe_write,
+            filepath,
+            data,
         )
         if ok:
-            logger.info("Persisted session '%s': %d messages", session_id, len(messages))
+            logger.info(
+                "Persisted session '%s': %d messages", session_id, len(messages)
+            )
         else:
-            logger.error("Failed to persist session '%s' after %d retries",
-                         session_id, MAX_RETRIES)
+            logger.error(
+                "Failed to persist session '%s' after %d retries",
+                session_id,
+                MAX_RETRIES,
+            )
 
     @node.service("/memory/load")
     async def handle_load(payload: dict) -> dict:
@@ -121,17 +134,21 @@ async def main():
                 try:
                     with open(filepath, "r", encoding="utf-8") as f:
                         data = json.load(f)
-                    sessions.append({
-                        "session_id": data.get("session_id", fname[:-5]),
-                        "message_count": data.get("message_count", 0),
-                        "last_updated": data.get("last_updated"),
-                    })
+                    sessions.append(
+                        {
+                            "session_id": data.get("session_id", fname[:-5]),
+                            "message_count": data.get("message_count", 0),
+                            "last_updated": data.get("last_updated"),
+                        }
+                    )
                 except Exception:
-                    sessions.append({
-                        "session_id": fname[:-5],
-                        "message_count": -1,
-                        "last_updated": None,
-                    })
+                    sessions.append(
+                        {
+                            "session_id": fname[:-5],
+                            "message_count": -1,
+                            "last_updated": None,
+                        }
+                    )
         except Exception as e:
             logger.error("Failed to list sessions: %s", e)
         return {"sessions": sessions}
